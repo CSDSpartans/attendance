@@ -1,0 +1,39 @@
+body {
+  /*background-color: #0A480D;*/
+  background-color:black;
+}
+#entry {
+  border: 2px solid black;
+  background-color: #0A480D;
+  margin: 20px auto;
+  width: 550px;
+}
+#enterspot {
+  text-align: center;
+  font-family: Arial;
+  font-size: 25px;
+  color: black;
+  background-color: white;
+  margin: 20px 20px 20px 20px;
+  padding: 3px 3px 3px 3px;
+}
+#enterbar {
+  text-align: center;
+  font-family: Arial;
+  font-size: 25px;
+  color: black;
+  background-color: white;
+  margin: 20px 20px 20px 20px;
+  padding: 3px 3px 3px 3px;
+}
+#runbutton {
+  border-radius: 8px;
+  font-family: Arial;
+  text-align: center;
+  color: #c0c0c0;
+  font-weight: bold;
+  font-size: 20px;
+  width: 200px;
+  margin: 25px auto 25px auto;
+  display: block;
+}
