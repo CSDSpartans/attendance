@@ -1,5 +1,4 @@
-var students = {
-  "9":
+{ "9":
     {"001932":"Cole Vahey",
       "001933":"Collin Flannery",
       "001934":"Logan Godfrey",
