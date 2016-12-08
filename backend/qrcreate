@@ -2,7 +2,7 @@
  
 import skilstak.colors as c
 from urllib.request import urlopen
-import os
+from os import system
 
 url = """https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={}"""
 
@@ -13,6 +13,7 @@ with urlopen(url.format(student)) as web:
     print(needed)
 
 with open('photo.png','w') as photo:
-    pass
-    #os.system('echo ' + needed + ' >> photo.png') 
-    #os.system('open -a "Preview" photo.png')
+    system("echo " + str(needed) + " >> photo.png")
+    #photo.write(str(needed)[2:][:-1])
+    #system('open -a "Preview" photo.png')
+
