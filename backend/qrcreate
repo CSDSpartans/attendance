@@ -9,11 +9,11 @@ url = """https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={}"""
 student = input("What student would you like to get a QR for?\n").replace(" ","%20")
 
 with urlopen(url.format(student)) as web:
-    needed = web.read()
-    print(needed)
+    raw = web.read()
+    print(str(raw))
 
 with open('photo.png','w') as photo:
-    system("echo " + str(needed) + " >> photo.png")
-    #photo.write(str(needed)[2:][:-1])
+    #photo.write(str(raw)[1:])
+    #system('echo ' + str(raw) + ' >> photo.png')
     #system('open -a "Preview" photo.png')
-
+    pass
