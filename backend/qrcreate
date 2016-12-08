@@ -1,0 +1,18 @@
+#!/usr/bin/env python3
+ 
+import skilstak.colors as c
+from urllib.request import urlopen
+import os
+
+url = """https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={}"""
+
+student = input("What student would you like to get a QR for?\n").replace(" ","%20")
+
+with urlopen(url.format(student)) as web:
+    needed = web.read()
+    print(needed)
+
+with open('photo.png','w') as photo:
+    pass
+    #os.system('echo ' + needed + ' >> photo.png') 
+    #os.system('open -a "Preview" photo.png')
