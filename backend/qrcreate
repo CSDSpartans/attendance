@@ -4,16 +4,13 @@ import skilstak.colors as c
 from urllib.request import urlopen
 from os import system
 
-url = """https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={}"""
+student = input("What student would you like to get a QR for?\n")
+url = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + student.replace(" ","%20")
 
-student = input("What student would you like to get a QR for?\n").replace(" ","%20")
-
-with urlopen(url.format(student)) as web:
-    raw = web.read()
-    print(str(raw))
+with urlopen(url) as web:
+    data = web.read()
+    print(data)
 
 with open('photo.png','wb') as photo:
-    photo.write(raw)
-    #system('echo ' + str(raw) + ' >> photo.png')
-    #system('open -a "Preview" photo.png')
-    pass
+    photo.write(data)
+    system('open -a "Preview" photo.png')
