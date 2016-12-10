@@ -12,8 +12,7 @@ url = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + student
 
 with urlopen(url) as web:
     data = web.read()
-    print(data)
-
-with open('photo.png','wb') as photo:
-    photo.write(data)
-    system('open -a "Preview" photo.png')
+    #print(data)
+    with open('photo.png','wb') as photo:
+        photo.write(data)
+        system('open -a "Preview" photo.png')
