@@ -5,7 +5,10 @@ from urllib.request import urlopen
 from os import system
 
 student = input("What student would you like to get a QR for?\n")
-url = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + student.replace(" ","%20")
+if student == " ":
+    print("That is not an acceptable student")
+    exit()
+url = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + student.replace(" ","%20") + '&qzone=1&bgcolor=194f8d&color=ccc'
 
 with urlopen(url) as web:
     data = web.read()
