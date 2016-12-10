@@ -12,8 +12,8 @@ with urlopen(url.format(student)) as web:
     raw = web.read()
     print(str(raw))
 
-with open('photo.png','w') as photo:
-    #photo.write(str(raw)[1:])
+with open('photo.png','wb') as photo:
+    photo.write(raw)
     #system('echo ' + str(raw) + ' >> photo.png')
     #system('open -a "Preview" photo.png')
     pass
