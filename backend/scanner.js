@@ -1,24 +1,27 @@
 #!/usr/bin/env node
  
-var c = require('skilstak-colors')
-
-var barcode = "001932"
 var students = {
-  "001932":"Cole Vahey",
-  "001933":"Collin Flannery",
-  "001934":"Logan Godfrey",
-  "001935":"Konrad Christian",
-  "001936":"William Muhlbach"
+  "9":{"Civics":["Logan Godfrey","John Doe","Ethan Adler"]},
+  "10":{"World History":["Cole Vahey","Collin Flannery","William Muhlbach"]},
+  "11":{"Science":["Konrad Christian","Christopher Dauber"]},
+  "12":{"Math":["Joe Keller","GRADUATING SENIOR"]}
 }
 
-var assign = function(code,json) {
-  if (barcode in students){
-    console.log(c.clear + "\n" + c.green + json[code] + "\n")
-  } else {
-    console.log(c.clear + c.red + "That code is invalid\n")
+var findStudent = function(student,grades){
+  for (grade in grades){
+    for (classroom in grades[grade]){
+      for (num in grades[grade][classroom]){
+        if (student == grades[grade][classroom][num]){
+          console.log(student + " is in " + grade + "th grade " + classroom)
+          return
+        }
+      }
+    }
   }
+  /*If the program is not exited*/
+  console.log("ERROR: STUDENT NOT FOUND")
 }
 
 /*These parameters will be inputed through a json file and the scanned
- * barcode*/
-assign(barcode,students)
+* barcode*/
+findStudent("Cole Vahey",students)
