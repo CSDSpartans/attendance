@@ -1,9 +1,19 @@
 { "9":
-  {"Civics":["Logan Godfrey","John Doe","Ethan Adler"]},
+  {"Civics":
+    ["Logan Godfrey","John Doe","Ethan Adler"]
+  },
   "10":
-    {"World History":["Cole Vahey","Collin Flannery","William Muhlbach"]},
+    {"World History":
+      ["Cole Vahey","Collin Flannery","William Muhlbach"],
+      "Science":
+      ["Brandon Ellington","Random 10th"]
+    },
   "11":
-    {"Science":["Konrad Christian","Christopher Dauber"]},
+    {"Science":
+      ["Konrad Christian","Christopher Dauber"]
+    },
   "12":
-    {"Math":["Joe Keller","GRADUATING SENIOR"]}
+    {"Math":
+      ["Joe Keller","GRADUATING SENIOR"]
+    }
 }

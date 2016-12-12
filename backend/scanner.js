@@ -24,4 +24,4 @@ var findStudent = function(student,grades){
 
 /*These parameters will be inputed through a json file and the scanned
 * barcode*/
-findStudent("Cole Vahey",students)
+findStudent("GRADUATING SENIOR",students)

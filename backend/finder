@@ -13,18 +13,19 @@ with open("studentdata.json","r+") as studentdata:
 def find_class():
     grade = input("Please enter a grade level\n>> " + c.blue)
     if grade in grades:
+        print(c.x + "\nClass list:" + c.blue)
         for listitem,_ in grades[grade].items():
-            print(c.x + "\nClass list:" + c.blue)
-            print(str(listitem), end=" ")
-        classroom = input(c.x + "\n\nPlease enter a class\n>> " + c.blue).title()
+            print(str(listitem))
+        classroom = input(c.x + "\nPlease enter a class\n>> " + c.blue).title()
         if classroom in grades[grade]:
-            print(c.x + "Students:")
+            print(c.x + "\nStudents:")
             for student in grades[grade][classroom]:
-                print(c.x + str(student))
+                print(c.blue + str(student) + c.x)
+            print()
         else:
-            print("That class either does not exist or is not documented." + c.x)
+            print(c.red + "That class either does not exist or is not documented." + c.x)
     else:
-        print("That grade level is not documented.")
+        print(c.red + "That grade level is not documented." + c.x)
 
 def find_student():
     student = input("What is the student's name?\n>> ").title()
@@ -34,7 +35,7 @@ def find_student():
                 print(c.x + student + " is in " + grade + "th grade " + classroom)
                 exit()
     else:
-        print("ERROR: STUDENT NOT FOUND")
+        print(c.red + "ERROR: STUDENT NOT FOUND")
 
 def start():
     decision = input(c.clear + "Do you wish to see a class list or find a student (c/s)?\n>> ").lower()
