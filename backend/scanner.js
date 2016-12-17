@@ -1,20 +1,90 @@
 #!/usr/bin/env node
  
 var students = {
-  "9":{"Civics":["Logan Godfrey","John Doe","Ethan Adler"]},
-  "10":{"World History":["Cole Vahey","Collin Flannery","William Muhlbach"]},
-  "11":{"Science":["Konrad Christian","Christopher Dauber"]},
-  "12":{"Math":["Joe Keller","GRADUATING SENIOR"]}
+  "9":
+    {
+      "Civics":
+        {
+          "Logan Godfrey":"present",
+          "John Doe":"present",
+          "Ethan Adler":"absent",
+          "Demetrice Towers":"present",
+          "Bart Champine":"absent"
+        },
+      "Math":
+        {
+          "Elda Cruz":"present",
+          "Danae Shiley":"absent",
+          "Rhea Keating":"present",
+          "Stanley Bloch":"present",
+          "Reena Parkman":"present"
+        }
+    },
+  "10":
+    {
+      "World History":
+        {
+          "Cole Vahey":"present",
+          "Collin Flannery":"present",
+          "William Muhlbach":"present",
+          "Eda Fant":"absent",
+          "Milan Lefever":"present"
+        },
+      "English":
+        {
+          "Violette Schillaci":"present",
+          "Verona Winders":"present",
+          "Cherly Oppenheimer":"present",
+          "Sheila Gammon":"absent",
+          "Isabella Hulings":"present"
+        }
+    },
+  "11":
+    {
+      "Science":
+        {
+          "Konrad Christian":"absent",
+          "Christopher Dauber":"present",
+          "Joane Browne":"present",
+          "Rudolf Bothwell":"present",
+          "Dallas Mayhue":"present"
+        },
+      "APES":
+        {
+          "Kanesha Saulsberry":"present",
+          "Nita Daw":"present",
+          "Clint Marker":"present",
+          "Cleveland Hires":"present",
+          "Lucien Ottman":"present"
+        }
+    },
+  "12":
+    {
+      "Math":
+        {
+          "Joe Keller":"present",
+          "GRADUATING SENIOR":"absent",
+          "Ossie Fedele":"present",
+          "Lashonda Rominger":"present",
+          "Rosaria Bianchi":"absent"
+        },
+      "APUSH":
+        {
+          "Hank Mumford":"present",
+          "Kory Bohlen":"absent",
+          "Frieda Calhoon":"present",
+          "Maryellen Bear":"present",
+          "Lorelei Bertolini":"absent"
+        }
+    }
 }
 
 var findStudent = function(student,grades){
   for (grade in grades){
     for (classroom in grades[grade]){
-      for (num in grades[grade][classroom]){
-        if (student == grades[grade][classroom][num]){
-          console.log(student + " is in " + grade + "th grade " + classroom)
-          return
-        }
+      if (student in grades[grade][classroom]){
+        console.log(student + " is in " + grade + "th grade " + classroom + " and they are " + grades[grade][classroom][student])
+        return
       }
     }
   }
@@ -24,4 +94,5 @@ var findStudent = function(student,grades){
 
 /*These parameters will be inputed through a json file and the scanned
 * barcode*/
-findStudent("GRADUATING SENIOR",students)
+findStudent("Elda Cruz",students)
+findStudent("Collin Flannery",students)

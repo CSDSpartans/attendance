@@ -20,7 +20,7 @@ def find_class():
         if classroom in grades[grade]:
             print(c.x + "\nStudents:")
             for student in grades[grade][classroom]:
-                print(c.blue + str(student) + c.x)
+                print(c.blue + str(student) + " " + grades[grade][classroom][student] + c.x)
             print()
         else:
             print(c.red + "That class either does not exist or is not documented." + c.x)
