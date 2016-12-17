@@ -1,6 +1,6 @@
-{ "9":
+{"9":
   {"Civics":
-    ["Logan Godfrey","John Doe","Ethan Adler"]
+    {"Logan Godfrey":"present","John Doe":"present","Ethan Adler":"absent"}
   },
   "10":
     {"World History":

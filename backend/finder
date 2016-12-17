@@ -32,7 +32,7 @@ def find_student():
     for grade in grades:
         for classroom in grades[grade]:
             if student in grades[grade][classroom]:
-                print(c.x + student + " is in " + grade + "th grade " + classroom)
+                print(c.x + student + " is in " + grade + "th grade " + classroom + " and they are " + grades[grade][classroom][student])
                 exit()
     else:
         print(c.red + "ERROR: STUDENT NOT FOUND")
