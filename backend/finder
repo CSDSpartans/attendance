@@ -14,7 +14,7 @@ def find_class():
     grade = input("Please enter a grade level\n>> " + c.blue)
     if grade in grades:
         print(c.x + "\nClass list:" + c.blue)
-        for listitem,_ in grades[grade].items():
+        for listitem in grades[grade]:
             print(str(listitem))
         classroom = input(c.x + "\nPlease enter a class\n>> " + c.blue).title()
         if classroom in grades[grade]:
@@ -26,7 +26,7 @@ def find_class():
                     pcolor = c.red
                 else:
                     pcolor = c.B03
-                print(c.blue + str(student) + " " + pcolor + grades[grade][classroom][student] + c.x)
+                print(c.blue + str(student) + " " + pcolor.rjust(30 - len(student)) + grades[grade][classroom][student] + c.x)
             print()
         else:
             print(c.red + "That class either does not exist or is not documented." + c.x)
