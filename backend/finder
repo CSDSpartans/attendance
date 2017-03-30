@@ -4,14 +4,14 @@ import colors as c
 import json
 from time import sleep as s
 
-with open("studentdata.json","r+") as studentdata:
-    grades = json.load(studentdata)
-    print(c.clear + c.red + "Grade levels:" + c.x)
-    for x,y in grades.items():
-        print(x + " --> " + str(y))
+studentdata = open("studentdata.json","r+")
+grades = json.load(studentdata)
+print(c.clear + c.red + "Grade levels:" + c.x)
+for x,y in grades.items():
+    print(x + " --> " + str(y))
 
 def find_class():
-    grade = input("Please enter a grade level\n>> " + c.blue)
+    grade = input(c.x + "Please enter a grade level\n>> " + c.blue)
     if grade in grades:
         print(c.x + "\nClass list:" + c.blue)
         for listitem in grades[grade]:
@@ -34,7 +34,7 @@ def find_class():
         print(c.red + "That grade level is not documented." + c.x)
 
 def find_student():
-    student = input("What is the student's name?\n>> ").title()
+    student = input(c.x + "What is the student's name?\n>> " + c.blue).title()
     for grade in grades:
         for classroom in grades[grade]:
             if student in grades[grade][classroom]:
@@ -44,13 +44,13 @@ def find_student():
         print(c.red + "ERROR: STUDENT NOT FOUND")
 
 def start():
-    decision = input(c.clear + "Do you wish to see a class list or find a student (c/s)?\n>> ").lower()
+    decision = input(c.clear + "Do you wish to see a class list or find a student (c/s)?\n>> " + c.blue).lower()
     if decision == "c":
         find_class()
     elif decision == "s":
         find_student()
     else:
-        print("That is not an acceptable input")
+        print(c.x + "That is not an acceptable input")
         s(1.5)
         start()
 
