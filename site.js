@@ -1,5 +1,9 @@
-#!/usr/bin/env node
+/*#!/usr/bin/env node*/
  
+var alerter = function () {
+  console.log("BARCODE: " + document.getElementById("enterbar").value)
+}
+
 var students = {
   "9":
     {
