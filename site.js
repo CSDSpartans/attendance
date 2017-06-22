@@ -1,7 +1,7 @@
 /*#!/usr/bin/env node*/
  
 var alerter = function () {
-  console.log("BARCODE: " + document.getElementById("enterbar").value)
+  alert("BARCODE: " + document.getElementById("enterbar").value)
 }
 
 var students = {
@@ -98,5 +98,5 @@ var findStudent = function(student,grades){
 
 /*These parameters will be inputed through a json file and the scanned
 * barcode*/
-findStudent("Elda Cruz",students)
-findStudent("Collin Flannery",students)
+/*findStudent("Elda Cruz",students)
+findStudent("Collin Flannery",students)*/
