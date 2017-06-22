@@ -1,7 +1,7 @@
 /*#!/usr/bin/env node*/
  
 var alerter = function () {
-  alert("BARCODE: " + document.getElementById("enterbar").value)
+  console.log("BARCODE: " + document.getElementById("enterbar").value)
 }
 
 var students = {
