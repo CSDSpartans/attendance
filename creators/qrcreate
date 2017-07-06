@@ -16,8 +16,8 @@ def getphoto(student):
     with urlopen(url) as web:
         #returns the encoded image byte
         data = web.read()
-        with open('photo.png','wb') as photo:
+        with open('qrphoto.png','wb') as photo:
             photo.write(data)
-            system('open -a "Preview" photo.png')
+            system('open -a "Preview" qrphoto.png')
 
 getphoto(studentinput())
