@@ -2,6 +2,7 @@
  
 var alerter = function () {
   console.log("BARCODE: " + document.getElementById("enterbar").value)
+  document.getElementById("enterbar").select()
 }
 
 var students = {
