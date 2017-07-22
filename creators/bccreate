@@ -1,23 +1,16 @@
 #!/usr/bin/env python3
- 
-import skilstak.colors as c
-from urllib.request import urlopen
-from os import system
 
-def studentinput():
-    student = input("What student would you like to get a barcode for?\n").replace(" ","%20")
-    if student == " ":
-        print("That is not an acceptable student")
-        exit()
-    return student
+import barcode
+from os import system as s
 
-def getphoto(student):
-    url = 'http://generator.barcodetools.com/barcode.png?gen=0&data=' + student + '&bcolor=CCCCCC&fcolor=194F8D&tcolor=0A0A0A&fh=14&bred=0&w2n=2.5&xdim=2&w=&h=120&debug=1&btype=7&angle=0&quiet=1&balign=2&talign=3&guarg=1&text=0&tdown=0&stst=1&schk=0&cchk=1&ntxt=1&c128=0'
-    with urlopen(url) as web:
-        #returns the encoded image byte
-        data = web.read()
-        with open('bcphoto.png','wb') as photo:
-            photo.write(data)
-            system('open -a "Preview" bcphoto.png')
+username = input("What is your name?\n>> ")
 
-getphoto(studentinput())
+c39 = barcode.get('code39', username)
+
+print(c39.get_fullcode())
+
+options = dict(add_checksum = False)
+
+c39.save('c39', options)
+
+s('open -a "Google Chrome" c39.svg')
