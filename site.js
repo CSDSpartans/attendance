@@ -2,7 +2,9 @@
  
 var alerter = function () {
   console.log("BARCODE: " + document.getElementById("enterbar").value)
-  document.getElementById("enterbar").select()
+  if (document.getElementById("enterbar").value == "KYLE") {
+    console.log("NO KYLE")
+  }
 }
 
 var students = {
