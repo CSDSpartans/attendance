@@ -79,16 +79,16 @@ void loop(void) {
           Serial.println("");
 		  
           // Wait a bit before reading the card again
-          delay(1000);
+          delay(500);
         }
         else
         {
-          Serial.println("Ooops ... unable to read the requested block. Slow down or try another key");
+          Serial.println("Ooops ... unable to read the requested block. Slow down");
         }
       }
       else
       {
-        Serial.println("Ooops ... authentication failed: Slow down or try another key");
+        Serial.println("Ooops ... authentication failed: Try another key");
       }
     }
   }

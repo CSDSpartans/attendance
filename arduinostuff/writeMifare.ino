@@ -33,7 +33,6 @@ void setup(void) {
 
 void loop(void) {
   uint8_t success;
-  uint8_t blankcheck;
   uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
   uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
     
@@ -63,25 +62,23 @@ void loop(void) {
       if (success)
       {
         Serial.println("Sector 1 (Blocks 4..7) has been authenticated");
+        uint8_t olddata[16];
         uint8_t data[16];
-
-        //**TODO: FIGURE OUT HOW TO CHECK FOR A BLANK CARD**
-        //
-        //
-        //
-        //
-        blankcheck = nfc.mifareclassic_ReadDataBlock(4, data);
-        if (blankcheck != (const uint8_t[]){ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
-        {
-          Serial.println("THIS CARD ALREADY CONTAINS A UID");
-          Serial.println("TO ABORT FORMATTING, REMOVE CARD FROM SHIELD");
-          nfc.PrintHexChar(data, 16);
-          Serial.println("");
-          delay(3000);
-        }
         
+        success = nfc.mifareclassic_ReadDataBlock(4, olddata);
+        Serial.println("\nCURRENT CARD UID:");
+        nfc.PrintHexChar(olddata, 16);
+        Serial.println("\nTO ABORT FORMATTING, REMOVE CARD FROM SHIELD");
+          
+        Serial.println("");
+        delay(3000);
+
+        // UIDToEncode must be no longer than 16 characters
+        char uidToEncode[16] = "Hello there";
+
         //Write to the card at a 16 character length
-        memcpy(data, (const uint8_t[]){ 'T', 'E', 'S', 'T', 'E', 'R', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, sizeof data);
+        //memcpy(data, (const uint8_t[]){ 'T', 'E', 'S', 'T', 'E', 'R', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, sizeof data);
+        memcpy(data, (const uint8_t[]){ uidToEncode }, sizeof data);
         success = nfc.mifareclassic_WriteDataBlock (4, data);
 
         if (success)
@@ -97,12 +94,12 @@ void loop(void) {
         }
         else
         {
-          Serial.println("Ooops ... unable to write to the card. Slow down or try another key");
+          Serial.println("Ooops ... unable to write to the card. Slow down");
         }
       }
       else
       {
-        Serial.println("Ooops ... authentication failed: Slow down or try another key");
+        Serial.println("Ooops ... authentication failed: Try another key");
       }
     }
   }
