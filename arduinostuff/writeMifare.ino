@@ -74,11 +74,11 @@ void loop(void) {
         delay(3000);
 
         // UIDToEncode must be no longer than 16 characters
-        char uidToEncode[16] = "Hello there";
+        uint8_t uidToEncode[16] = "Hello there";
 
         //Write to the card at a 16 character length
-        //memcpy(data, (const uint8_t[]){ 'T', 'E', 'S', 'T', 'E', 'R', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, sizeof data);
-        memcpy(data, (const uint8_t[]){ uidToEncode }, sizeof data);
+        //memcpy(data, (const uint8_t[]){ 'A', 'B', 'H', 'I', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, sizeof data);
+        memcpy(data, uidToEncode, sizeof data);
         success = nfc.mifareclassic_WriteDataBlock (4, data);
 
         if (success)

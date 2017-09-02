@@ -2,6 +2,10 @@
 #include <SPI.h>
 #include <Adafruit_PN532.h>
 
+int bluePin = 11;
+int greenPin = 12;
+int redPin = 13;
+
 // If using the shield with I2C, define just the pins connected
 // to the IRQ and reset lines.  Use the values below (2, 3) for the shield!
 #define PN532_IRQ   (2)
@@ -28,10 +32,17 @@ void setup(void) {
   nfc.SAMConfig();
   
   Serial.println("Waiting for an ISO14443A Card ...");
+
+  pinMode(bluePin, OUTPUT);
+  pinMode(greenPin, OUTPUT);
+  pinMode(redPin, OUTPUT);
 }
 
 
 void loop(void) {
+
+  digitalWrite(bluePin, HIGH);
+  
   uint8_t success;
   uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
   uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
@@ -67,6 +78,12 @@ void loop(void) {
       {
         Serial.println("Sector 1 (Blocks 4..7) has been authenticated");
         uint8_t data[16];
+        uint8_t checkword[16];
+        bool checker;
+
+        checker = true;
+
+        memcpy(checkword, (const uint8_t[]){ 'A', 'B', 'H', 'I', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, sizeof checkword);
 
         // Try to read the contents of block 4
         success = nfc.mifareclassic_ReadDataBlock(4, data);
@@ -75,9 +92,28 @@ void loop(void) {
         {
           // Data seems to have been read ... spit it out
           Serial.println("Reading Block 4:");
+          
           nfc.PrintHexChar(data, 16);
           Serial.println("");
-		  
+
+          for(byte b=0; b<sizeof(data); b++)
+          {
+            if (data[b] != checkword[b])
+            {
+              checker = false;
+            }
+          }
+          
+
+          digitalWrite(bluePin, LOW);
+          digitalWrite(redPin, HIGH);
+
+          if (checker)
+          {
+            digitalWrite(redPin, LOW);
+            digitalWrite(greenPin, HIGH);
+          }
+          
           // Wait a bit before reading the card again
           delay(500);
         }
@@ -88,8 +124,12 @@ void loop(void) {
       }
       else
       {
-        Serial.println("Ooops ... authentication failed: Try another key");
+        Serial.println("Ooops ... authentication failed: Slow down");
       }
+
+      digitalWrite(redPin, LOW);
+      digitalWrite(greenPin, LOW);
+      digitalWrite(bluePin, LOW);
     }
   }
 }
