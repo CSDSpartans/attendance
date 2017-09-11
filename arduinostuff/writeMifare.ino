@@ -2,6 +2,10 @@
 #include <SPI.h>
 #include <Adafruit_PN532.h>
 
+int bluePin = 11;
+int greenPin = 12;
+int redPin = 13;
+
 // If using the shield with I2C, define just the pins connected
 // to the IRQ and reset lines.  Use the values below (2, 3) for the shield!
 #define PN532_IRQ   (2)
@@ -28,10 +32,17 @@ void setup(void) {
   nfc.SAMConfig();
   
   Serial.println("Waiting for an ISO14443A Card to write to…");
+
+  pinMode(bluePin, OUTPUT);
+  pinMode(greenPin, OUTPUT);
+  pinMode(redPin, OUTPUT);
 }
 
 
 void loop(void) {
+
+  digitalWrite(bluePin, HIGH);
+  
   uint8_t success;
   uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
   uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
@@ -71,6 +82,8 @@ void loop(void) {
         Serial.println("\nTO ABORT FORMATTING, REMOVE CARD FROM SHIELD");
           
         Serial.println("");
+        digitalWrite(bluePin, LOW);
+        digitalWrite(redPin, HIGH);
         delay(3000);
 
         // UIDToEncode must be no longer than 16 characters
@@ -90,7 +103,10 @@ void loop(void) {
           Serial.println("");
       
           // Wait a bit before writing to a different card
-          delay(3000);
+          digitalWrite(redPin, LOW);
+          digitalWrite(greenPin, HIGH);
+          delay(1000);
+          digitalWrite(greenPin, LOW);
         }
         else
         {
@@ -101,6 +117,7 @@ void loop(void) {
       {
         Serial.println("Ooops ... authentication failed: Try another key");
       }
+      digitalWrite(bluePin, LOW);
     }
   }
 }
