@@ -40,10 +40,16 @@ void setup(void) {
 
 
 void loop(void) {
-
-  // Turn on blue indicator light
-  digitalWrite(bluePin, HIGH);
   
+  //digitalWrite(bluePin, HIGH);
+  // Turn on blue indicator light
+  if (Serial.available()) {
+    char serialListener = Serial.read();
+    if (serialListener == 'S') {
+      digitalWrite(bluePin, HIGH);
+    }
+  }
+
   uint8_t success;
   uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
   uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
@@ -82,16 +88,24 @@ void loop(void) {
         else
         {
           // Serial.println("Ooops ... unable to read the requested block. Slow down");
+          digitalWrite(bluePin, LOW);
+          digitalWrite(redPin, HIGH);
+          delay(500);
         }
       }
       else
       {
         // Serial.println("Ooops ... authentication failed: Slow down");
+        digitalWrite(bluePin, LOW);
+        digitalWrite(redPin, HIGH);
+        delay(500);
       }
       // ALL OFF
       digitalWrite(redPin, LOW);
       digitalWrite(greenPin, LOW);
       digitalWrite(bluePin, LOW);
+      // Blue back on
+      digitalWrite(bluePin, HIGH);
     }
   }
 }
