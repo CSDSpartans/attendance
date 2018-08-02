@@ -14,7 +14,7 @@ int redPin = 13;
 Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 
 void setup(void) {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   nfc.begin();
 
@@ -41,14 +41,8 @@ void setup(void) {
 
 void loop(void) {
   
-  //digitalWrite(bluePin, HIGH);
   // Turn on blue indicator light
-  if (Serial.available()) {
-    char serialListener = Serial.read();
-    if (serialListener == 'S') {
-      digitalWrite(bluePin, HIGH);
-    }
-  }
+  digitalWrite(bluePin, HIGH);
 
   uint8_t success;
   uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
@@ -80,9 +74,8 @@ void loop(void) {
          
           digitalWrite(bluePin, LOW);
           
-          // Green for correct Red for incorrect in the future
+          // Green for read
           digitalWrite(greenPin, HIGH);
-          // digitalWrite(redPin, HIGH);
           delay(500);
         }
         else
@@ -90,7 +83,7 @@ void loop(void) {
           // Serial.println("Ooops ... unable to read the requested block. Slow down");
           digitalWrite(bluePin, LOW);
           digitalWrite(redPin, HIGH);
-          delay(500);
+          delay(1500);
         }
       }
       else
@@ -104,8 +97,6 @@ void loop(void) {
       digitalWrite(redPin, LOW);
       digitalWrite(greenPin, LOW);
       digitalWrite(bluePin, LOW);
-      // Blue back on
-      digitalWrite(bluePin, HIGH);
     }
   }
 }

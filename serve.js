@@ -1,51 +1,66 @@
 const express = require('express')
 const app = express()
-const jade = require("jade")
+const jade = require('jade')
+const SerialPort = require('serialport')
 
-let studentData = {
-  "present":["Adam Nordik","Jacob Smith"],
-  "late":["James Michael","Matthew Greene","Brian Rett"],
-  "absent":["Dennis Smith", "Sam Darnold"]
-}
+// Get the current time
+let currentTime = new Date()
+console.log("Current time:",currentTime.getHours(), currentTime.getMinutes(), currentTime.getSeconds())
 
+// Base html page
 let jade_lines = [
   "doctype html",
   "html",
   "    body",
   "        table(border='1' width='100%' style='border:2px solid black;text-align:center;font-size:2em;font-family:Lucida Grande')",
   "            tr",
-  "                th(style='background-color:#9fff99') Present",
-  "                th(style='background-color:#fff899') Late",
-  "                th(style='background-color:#ff9999') Absent"
+  "                th Student",
+  "                th Attendance"
 ]
 
+// Generate function for the jade lines of html
 let generate = function(obj){
-  for (i = 0; i < Math.max(obj.present.length,obj.late.length,obj.absent.length); i++) {
-    p = ""
-    l = ""
-    a = ""
-    if (obj.present[i] != null) {
-      p = obj.present[i]
-    }
-    if (obj.late[i] != null) {
-      l = obj.late[i]
-    }
-    if (obj.absent[i] != null) {
-      a = obj.absent[i]
-    }
+  for (i=0; i<Object.keys(obj).length; i++){
+    student = Object.keys(obj)[i]
+    attendance = obj[Object.keys(obj)[i]]
     jade_lines.push("            tr")
-    jade_lines.push("                td "+p)
-    jade_lines.push("                td "+l)
-    jade_lines.push("                td "+a)
+    jade_lines.push("                td "+student)
+    jade_lines.push("                td "+attendance)
   }
 }
 
-generate(studentData)
+let studentData = {}
 
-let comp = jade.compile(jade_lines.join("\n"), {pretty:true})
-console.log(comp())
+// Read the RFID card
+const Readline = SerialPort.parsers.Readline
+const sPort = new SerialPort('/dev/cu.usbmodem1411',{baudRate: 9600})
+const parser = new Readline()
+sPort.pipe(parser)
+parser.on('data', function(data) {
+  let rawData = data.toString('utf-8')
 
-app.get('/', (req, res) => res.send(comp()))
+  // Get the student name from the decoded string
+  let studentCard = rawData.slice(-17,-1).split(".")[0]
+  console.log(studentCard)
 
-let port = 3000
-app.listen(port, () => console.log('Served on port', port))
+  // Add the student to the database based on their
+  // attendance TODO (based on time)
+  studentData[studentCard] = "present"
+  generate(studentData)
+
+  // Compile the jade lines to send to the site
+  let comp = jade.compile(jade_lines.join("\n"), {pretty:true})
+
+  // Use express to serve the site
+  app.get('/', (req, res) => res.send(comp()))
+
+
+
+  // TODO FIX THIS!!! When I go to update, express can't
+  // because the server is already in use. See how to close
+  // then reopen
+  server = app.listen(3000, () => console.log('Served on port 3000'))
+
+
+})
+
