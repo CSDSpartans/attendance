@@ -3,10 +3,6 @@ const app = express()
 const jade = require('jade')
 const SerialPort = require('serialport')
 
-// Get the current time
-let currentTime = new Date()
-console.log("Current time:",currentTime.getHours(), currentTime.getMinutes(), currentTime.getSeconds())
-
 // Base html page
 let jade_lines = [
   "doctype html",
@@ -37,30 +33,53 @@ const sPort = new SerialPort('/dev/cu.usbmodem1411',{baudRate: 9600})
 const parser = new Readline()
 sPort.pipe(parser)
 parser.on('data', function(data) {
-  let rawData = data.toString('utf-8')
 
-  // Get the student name from the decoded string
-  let studentCard = rawData.slice(-17,-1).split(".")[0]
+  // Get the student name from the buffer string
+  let studentCard = data.toString('utf-8').slice(-17,-1).split(".")[0]
   console.log(studentCard)
 
-  // Add the student to the database based on their
-  // attendance TODO (based on time)
-  studentData[studentCard] = "present"
-  generate(studentData)
+  // Set up today's time and class start
+  classTime = [19,01,20]
+  let today = new Date()
+  let classStart = new Date()
+  classStart.setHours(classTime[0])
+  classStart.setMinutes(classTime[1])
+  classStart.setSeconds(classTime[2])
 
-  // Compile the jade lines to send to the site
-  let comp = jade.compile(jade_lines.join("\n"), {pretty:true})
-
-  // Use express to serve the site
-  app.get('/', (req, res) => res.send(comp()))
-
-
-
-  // TODO FIX THIS!!! When I go to update, express can't
-  // because the server is already in use. See how to close
-  // then reopen
-  server = app.listen(3000, () => console.log('Served on port 3000'))
-
-
+  // Add their attendance to the studentData
+  if (!(studentCard in studentData)) {
+    if (today - classStart < 0){
+      studentData[studentCard] = "present"
+    } else {
+      studentData[studentCard] = "late"
+    }
+  }
+  console.log(studentData)
 })
 
+function serveSite(endTime, attendanceRecord, totalStudents) {
+
+  // Get the current time
+  let today = new Date()
+  let end = new Date()
+  end.setHours(endTime[0])
+  end.setMinutes(endTime[1])
+  end.setSeconds(endTime[2])
+
+  // See if class has ended
+  if (end - today < 0){
+    // Compile the jade lines to send to the site
+    // Have to do something extra with attendanceRecord and
+    // totalStudents
+    generate(studentData)
+    let comp = jade.compile(jade_lines.join("\n"), {pretty:true})
+
+    // Use express to serve the site
+    app.get('/', (req, res) => res.send(comp()))
+    let port = 3000
+    app.listen(port, () => console.log('Served on port',port))
+  }
+}
+
+// FILL IN X, Y, AND Z
+// serveSite([18,40,00],"y","z")
