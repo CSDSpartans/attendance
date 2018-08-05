@@ -49,8 +49,9 @@ parser.on('data', function(data) {
   let studentCard = data.toString('utf-8').slice(-17,-1).split('.')[0]
   console.log(studentCard)
 
-  // Set up current time and class start time
-  classTime = [14,30,00]
+  // Set up current time and class start time 
+  // (plus one minute grace period)
+  classTime = [13,42,00]
   let today = new Date()
   let classStart = new Date()
   classStart.setHours(classTime[0])
