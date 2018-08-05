@@ -3,7 +3,7 @@ const app = express()
 const jade = require('jade')
 const SerialPort = require('serialport')
 
-// Base html page
+// Generic base html setup
 let jade_lines = [
   "doctype html",
   "html",
@@ -25,21 +25,32 @@ let generate = function(obj){
   }
 }
 
+// Generic FULL CLASS data
+let techIVClassroom = [
+  'Cole Vahey',
+  'William Muhlbach',
+  'Jack Martin',
+  'Brandon Ellington',
+  'Gunnar Olsen',
+  'Ethan Baker',
+  'Luke Whiteside'
+]
+
 let studentData = {}
 
-// Read the RFID card
+// Read the RFID data from arduino
 const Readline = SerialPort.parsers.Readline
 const sPort = new SerialPort('/dev/cu.usbmodem1411',{baudRate: 9600})
 const parser = new Readline()
 sPort.pipe(parser)
 parser.on('data', function(data) {
 
-  // Get the student name from the buffer string
-  let studentCard = data.toString('utf-8').slice(-17,-1).split(".")[0]
+  // Get the student name from the arduino buffer
+  let studentCard = data.toString('utf-8').slice(-17,-1).split('.')[0]
   console.log(studentCard)
 
-  // Set up today's time and class start
-  classTime = [19,01,20]
+  // Set up current time and class start time
+  classTime = [14,30,00]
   let today = new Date()
   let classStart = new Date()
   classStart.setHours(classTime[0])
@@ -54,32 +65,61 @@ parser.on('data', function(data) {
       studentData[studentCard] = "late"
     }
   }
-  console.log(studentData)
+  // Debug
+  // console.log(studentData)
 })
 
-function serveSite(endTime, attendanceRecord, totalStudents) {
+let serving = false
 
-  // Get the current time
+// timeSite takes three params:
+// 1. End time in the form of [hour,minute,second]
+// 2. Attendance data taken by the arduino
+// 3. Preset class list which allows absentees to be marked
+function timeSite(endTime, attendanceRecord, totalStudents) {
+
+  // See if class has ended
   let today = new Date()
   let end = new Date()
   end.setHours(endTime[0])
   end.setMinutes(endTime[1])
   end.setSeconds(endTime[2])
+  if (end - today < 0 && serving == false){
 
-  // See if class has ended
-  if (end - today < 0){
-    // Compile the jade lines to send to the site
-    // Have to do something extra with attendanceRecord and
-    // totalStudents
-    generate(studentData)
-    let comp = jade.compile(jade_lines.join("\n"), {pretty:true})
+    // Mark all the kids in the class who weren't there absent
+    let attendanceData = attendanceRecord
+    for (i=0;i<totalStudents.length;i++){
+      student = totalStudents[i]
+      if (!(student in attendanceRecord)){
+        attendanceData[student] = "absent"
+      }
+    }
+
+    // Sort based on lastnames alphabetically
+    let lastNames = []
+    let finalData = {}
+    for (i=0;i<totalStudents.length;i++){
+      lastNames.push(totalStudents[i].split(' ')[1])
+    }
+    lastNames.sort()
+    for (i=0;i<lastNames.length;i++){
+      for (j=0;j<totalStudents.length;j++){
+        if (totalStudents[j].split(' ')[1] == lastNames[i]){
+          finalData[[lastNames[i],totalStudents[j].split(' ')[0]].join(', ')] = attendanceData[totalStudents[j]]
+        }
+      }
+    }
+
+    // Generate jade html
+    generate(finalData)
+    let comp = jade.compile(jade_lines.join('\n'), {pretty:true})
 
     // Use express to serve the site
     app.get('/', (req, res) => res.send(comp()))
     let port = 3000
     app.listen(port, () => console.log('Served on port',port))
+    serving = true
   }
 }
 
-// FILL IN X, Y, AND Z
-// serveSite([18,40,00],"y","z")
+// Check to see if class has ended every 15 seconds
+setInterval(function(){timeSite([15,15,00],studentData,techIVClassroom)},15000)
