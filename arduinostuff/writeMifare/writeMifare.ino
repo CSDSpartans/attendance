@@ -86,8 +86,8 @@ void loop(void) {
         digitalWrite(redPin, HIGH);
         delay(3000);
 
-        // UIDToEncode must be no longer than 16 characters
-        uint8_t uidToEncode[16] = "Abhi Longer-than-sixteen-characters";
+        // UIDToEncode uses a varchar(16) which cuts off at 16 characters 
+        uint8_t uidToEncode[16] = "Cole Vahey";
 
         //Write to the card at a 16 character length
         memcpy(data, uidToEncode, sizeof data);
