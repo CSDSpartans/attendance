@@ -14,7 +14,7 @@ int redPin = 13;
 Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 
 void setup(void) {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   nfc.begin();
 
@@ -82,12 +82,13 @@ void loop(void) {
         Serial.println("\nTO ABORT FORMATTING, REMOVE CARD FROM SHIELD");
           
         Serial.println("");
-        digitalWrite(bluePin, LOW);
         digitalWrite(redPin, HIGH);
+        digitalWrite(greenPin, HIGH);
+        digitalWrite(bluePin, LOW);
         delay(3000);
 
         // UIDToEncode uses a varchar(16) which cuts off at 16 characters 
-        uint8_t uidToEncode[16] = "Cole Vahey";
+        uint8_t uidToEncode[16] = "Gunnar Olson";
 
         //Write to the card at a 16 character length
         memcpy(data, uidToEncode, sizeof data);
@@ -103,7 +104,6 @@ void loop(void) {
       
           // Wait a bit before writing to a different card
           digitalWrite(redPin, LOW);
-          digitalWrite(greenPin, HIGH);
           delay(1000);
           digitalWrite(greenPin, LOW);
         }

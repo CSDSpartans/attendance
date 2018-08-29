@@ -15,7 +15,7 @@ let jade_lines = [
 ]
 
 // Generate function for the jade lines of html
-let generate = function(obj){
+const generate = obj => {
   for (i=0; i<Object.keys(obj).length; i++){
     student = Object.keys(obj)[i]
     attendance = obj[Object.keys(obj)[i]]
@@ -29,11 +29,15 @@ let generate = function(obj){
 let techIVClassroom = [
   'Cole Vahey',
   'William Muhlbach',
-  'Jack Martin',
-  'Brandon Ellington',
-  'Gunnar Olsen',
+  'Mahmoud Banawan',
+  'Nathan Connor',
+  'Jack Snyder',
+  'Brando Ellingto',
+  'Gunnar Olson',
   'Ethan Baker',
-  'Luke Whiteside'
+  'Matty Burrows',
+  'Soren Wilson',
+  'Peter Ridgway'
 ]
 
 let studentData = {}
@@ -76,7 +80,7 @@ let serving = false
 // 1. End time in the form of [hour,minute,second]
 // 2. Attendance data taken by the arduino
 // 3. Preset class list which allows absentees to be marked
-function timeSite(endTime, attendanceRecord, totalStudents) {
+const timeSite = (endTime, attendanceRecord, totalStudents) => {
 
   // See if class has ended
   let today = new Date()
