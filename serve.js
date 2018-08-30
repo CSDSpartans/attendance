@@ -1,11 +1,11 @@
-const express = require('express')
-const app = express()
+const browserSync = require('browser-sync')
 const jade = require('jade')
 const SerialPort = require('serialport')
+const fs = require('fs')
 const soundPlayer = require('play-sound')(opts = {})
 
 // Generic base html setup
-let jade_lines = [
+const jade_lines = [
   "doctype html",
   "html",
   "    body",
@@ -17,13 +17,15 @@ let jade_lines = [
 
 // Generate function for the jade lines of html
 const generate = obj => {
+  let newTable = jade_lines.slice()
   for (i=0; i<Object.keys(obj).length; i++){
     student = Object.keys(obj)[i]
     attendance = obj[Object.keys(obj)[i]]
-    jade_lines.push("            tr")
-    jade_lines.push("                td "+student)
-    jade_lines.push("                td "+attendance)
+    newTable.push("            tr")
+    newTable.push("                td "+student)
+    newTable.push("                td "+attendance)
   }
+  return newTable
 }
 
 // Generic FULL CLASS data
@@ -54,8 +56,11 @@ parser.on('data', function(data) {
   let studentCard = data.toString('utf-8').slice(-17,-1).split('.')[0]
   console.log(studentCard)
 
+  // SOUND STUFF
   if (studentCard === 'Cole Vahey'){
     soundPlayer.play('sounds/smb.mp3', function(err){if (err) throw err})
+  } else {
+    soundPlayer.play('sounds/Blip.mp3', function(err){if (err) throw err})
   }
 
   // Set up current time and class start time 
@@ -75,61 +80,52 @@ parser.on('data', function(data) {
       studentData[studentCard] = "late"
     }
   }
-  // Debug
-  // console.log(studentData)
 })
 
-let serving = false
+fs.writeFile("./index.html", '', function(err) {if(err) throw err})
+// Broser sync to serve the site
+browserSync({server: true, files: "./index.html"}, function(err, bs) {
+  console.log(bs.options.getIn(["urls", "local"]))
+})
 
-// timeSite takes three params:
-// 1. End time in the form of [hour,minute,second]
+// timeSite takes two params:
 // 2. Attendance data taken by the arduino
 // 3. Preset class list which allows absentees to be marked
-const timeSite = (endTime, attendanceRecord, totalStudents) => {
+const sync = (attendanceRecord, totalStudents) => {
 
-  // See if class has ended
-  let today = new Date()
-  let end = new Date()
-  end.setHours(endTime[0])
-  end.setMinutes(endTime[1])
-  end.setSeconds(endTime[2])
-  if (end - today < 0 && serving == false){
-
-    // Mark all the kids in the class who weren't there absent
-    let attendanceData = attendanceRecord
-    for (i=0;i<totalStudents.length;i++){
-      student = totalStudents[i]
-      if (!(student in attendanceRecord)){
-        attendanceData[student] = "absent"
-      }
+  // Mark all the kids in the class who weren't there absent
+  let attendanceData = JSON.parse(JSON.stringify(attendanceRecord))
+  for (i=0;i<totalStudents.length;i++){
+    student = totalStudents[i]
+    if (!(student in attendanceRecord)){
+      attendanceData[student] = "absent"
     }
-
-    // Sort based on lastnames alphabetically
-    let lastNames = []
-    let finalData = {}
-    for (i=0;i<totalStudents.length;i++){
-      lastNames.push(totalStudents[i].split(' ')[1])
-    }
-    lastNames.sort()
-    for (i=0;i<lastNames.length;i++){
-      for (j=0;j<totalStudents.length;j++){
-        if (totalStudents[j].split(' ')[1] == lastNames[i]){
-          finalData[[lastNames[i],totalStudents[j].split(' ')[0]].join(', ')] = attendanceData[totalStudents[j]]
-        }
-      }
-    }
-
-    // Generate jade html
-    generate(finalData)
-    let comp = jade.compile(jade_lines.join('\n'), {pretty:true})
-
-    // Use express to serve the site
-    app.get('/', (req, res) => res.send(comp()))
-    let port = 3000
-    app.listen(port, () => console.log('Served on port',port))
-    serving = true
   }
+
+  // Sort based on lastnames alphabetically
+  let lastNames = []
+  let finalData = {}
+  for (i=0;i<totalStudents.length;i++){
+    lastNames.push(totalStudents[i].split(' ')[1])
+  }
+  lastNames.sort()
+  for (i=0;i<lastNames.length;i++){
+    for (j=0;j<totalStudents.length;j++){
+      if (totalStudents[j].split(' ')[1] == lastNames[i]){
+        finalData[[lastNames[i],totalStudents[j].split(' ')[0]].join(', ')] = attendanceData[totalStudents[j]]
+      }
+    }
+  }
+
+  // Generate html
+  let html = generate(finalData)
+  let comp = jade.compile(html.join('\n'), {pretty:true})
+ 	
+  // Write the new html to the index.html file
+  fs.writeFile("./index.html", '', function(err) {if(err) throw err})
+  fs.writeFile("./index.html", comp(), function(err) {if(err) throw err})
+
 }
 
-// Check to see if class has ended every 15 seconds
-setInterval(function(){timeSite([15,15,00],studentData,techIVClassroom)},15000)
+// Update the attendance record every 20 seconds
+setInterval(function(){sync(studentData,techIVClassroom)},20000)
