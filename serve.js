@@ -18,7 +18,7 @@ const jade_lines = [
 // Generate function for the jade lines of html
 const generate = obj => {
   let newTable = jade_lines.slice()
-  for (i=0; i<Object.keys(obj).length; i++){
+  for (let i=0; i<Object.keys(obj).length; i++){
     student = Object.keys(obj)[i]
     attendance = obj[Object.keys(obj)[i]]
     newTable.push("            tr")
@@ -28,19 +28,11 @@ const generate = obj => {
   return newTable
 }
 
-// Generic FULL CLASS data
+// Generic data
 let techIVClassroom = [
   'Cole Vahey',
-  'William Muhlbach',
-  'Mahmoud Banawan',
-  'Nathan Connor',
-  'Jack Snyder',
-  'Brando Ellingto',
-  'Gunnar Olson',
-  'Ethan Baker',
-  'Matty Burrows',
-  'Soren Wilson',
-  'Peter Ridgway'
+  'John Doe',
+  'Jane Doe'
 ]
 
 let studentData = {}
@@ -95,7 +87,7 @@ const sync = (attendanceRecord, totalStudents) => {
 
   // Mark all the kids in the class who weren't there absent
   let attendanceData = JSON.parse(JSON.stringify(attendanceRecord))
-  for (i=0;i<totalStudents.length;i++){
+  for (let i=0;i<totalStudents.length;i++){
     student = totalStudents[i]
     if (!(student in attendanceRecord)){
       attendanceData[student] = "absent"
@@ -105,12 +97,12 @@ const sync = (attendanceRecord, totalStudents) => {
   // Sort based on lastnames alphabetically
   let lastNames = []
   let finalData = {}
-  for (i=0;i<totalStudents.length;i++){
+  for (let i=0;i<totalStudents.length;i++){
     lastNames.push(totalStudents[i].split(' ')[1])
   }
   lastNames.sort()
-  for (i=0;i<lastNames.length;i++){
-    for (j=0;j<totalStudents.length;j++){
+  for (let i=0;i<lastNames.length;i++){
+    for (let j=0;j<totalStudents.length;j++){
       if (totalStudents[j].split(' ')[1] == lastNames[i]){
         finalData[[lastNames[i],totalStudents[j].split(' ')[0]].join(', ')] = attendanceData[totalStudents[j]]
       }

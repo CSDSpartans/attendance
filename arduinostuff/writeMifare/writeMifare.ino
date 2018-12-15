@@ -88,7 +88,7 @@ void loop(void) {
         delay(3000);
 
         // UIDToEncode uses a varchar(16) which cuts off at 16 characters 
-        uint8_t uidToEncode[16] = "Gunnar Olson";
+        uint8_t uidToEncode[16] = "John Doe";
 
         //Write to the card at a 16 character length
         memcpy(data, uidToEncode, sizeof data);
