@@ -29,7 +29,7 @@ const generate = obj => {
 }
 
 // Generic data
-let techIVClassroom = [
+let classData = [
   'Cole Vahey',
   'John Doe',
   'Jane Doe'
@@ -42,7 +42,7 @@ const Readline = SerialPort.parsers.Readline
 const sPort = new SerialPort('/dev/cu.usbmodem1411',{baudRate: 9600})
 const parser = new Readline()
 sPort.pipe(parser)
-parser.on('data', function(data) {
+parser.on('data', data => {
 
   // Get the student name from the arduino buffer
   let studentCard = data.toString('utf-8').slice(-17,-1).split('.')[0]
@@ -50,9 +50,9 @@ parser.on('data', function(data) {
 
   // SOUND STUFF
   if (studentCard === 'Cole Vahey'){
-    soundPlayer.play('sounds/smb.mp3', function(err){if (err) throw err})
+    soundPlayer.play('sounds/smb.mp3', err => {if (err) throw err})
   } else {
-    soundPlayer.play('sounds/Blip.mp3', function(err){if (err) throw err})
+    soundPlayer.play('sounds/Blip.mp3', err => {if (err) throw err})
   }
 
   // Set up current time and class start time 
@@ -71,12 +71,15 @@ parser.on('data', function(data) {
     } else {
       studentData[studentCard] = "late"
     }
+    // Added to update whenever new data is received
+    sync(studentData, classData)
   }
 })
 
-fs.writeFile("./index.html", '', function(err) {if(err) throw err})
+fs.writeFile("./index.html", '', err => {if(err) throw err})
 // Broser sync to serve the site
-browserSync({server: true, files: "./index.html"}, function(err, bs) {
+browserSync({server: true, files: "./index.html"}, (err, bs) => {
+  if (err) throw err
   console.log(bs.options.getIn(["urls", "local"]))
 })
 
@@ -114,10 +117,10 @@ const sync = (attendanceRecord, totalStudents) => {
   let comp = jade.compile(html.join('\n'), {pretty:true})
  	
   // Write the new html to the index.html file
-  fs.writeFile("./index.html", '', function(err) {if(err) throw err})
-  fs.writeFile("./index.html", comp(), function(err) {if(err) throw err})
+  fs.writeFile("./index.html", '', err => {if(err) throw err})
+  fs.writeFile("./index.html", comp(), err => {if(err) throw err})
 
 }
 
-// Update the attendance record every 20 seconds
-setInterval(function(){sync(studentData,techIVClassroom)},20000)
+// Testing: Update the attendance record every 20 seconds
+// setInterval(function(){sync(studentData,classData)},20000)
