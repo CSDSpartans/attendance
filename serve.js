@@ -39,6 +39,8 @@ let studentData = {}
 
 // Read the RFID data from arduino
 const Readline = SerialPort.parsers.Readline
+
+// MUST set serial port to the correct input location
 const sPort = new SerialPort('/dev/cu.usbmodem1411',{baudRate: 9600})
 const parser = new Readline()
 sPort.pipe(parser)
